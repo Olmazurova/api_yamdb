@@ -9,6 +9,7 @@ User = get_user_model()
 
 
 class ReviewSerializer(AuthorFieldMixin, serializers.ModelSerializer):
+    """Сериализатор модели Review."""
 
     class Meta:
         model = Review
@@ -19,6 +20,7 @@ class ReviewSerializer(AuthorFieldMixin, serializers.ModelSerializer):
 
 
 class CommentSerializer(AuthorFieldMixin, serializers.ModelSerializer):
+    """Сериализатор модели Comment."""
 
     class Meta:
         model = Comment

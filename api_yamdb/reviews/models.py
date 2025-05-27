@@ -35,6 +35,11 @@ class Review(models.Model):
         'Дата добавления', auto_now_add=True, db_index=True
     )
 
+    class Meta:
+        ordering = ('pub_date',)
+        verbose_name = 'отзыв'
+        verbose_name_plural = 'Отзывы'
+
 
 class Comment(models.Model):
     author = models.ForeignKey(
@@ -47,3 +52,8 @@ class Comment(models.Model):
     pub_date = models.DateTimeField(
         'Дата добавления', auto_now_add=True, db_index=True
     )
+
+    class Meta:
+        ordering = ('pub_date',)
+        verbose_name = 'комментарий'
+        verbose_name_plural = 'Комментарии'
