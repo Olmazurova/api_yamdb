@@ -16,7 +16,19 @@ class ReviewSerializer(AuthorFieldMixin, serializers.ModelSerializer):
         fields = ('id', 'text', 'author', 'score', 'pub_date')
 
     def validate_score(self, value):
-        return value in range(MIN_SCORE, MAX_SCORE + 1)
+        if value not in range(MIN_SCORE, MAX_SCORE + 1):
+            raise serializers.ValidationError('Оценка должна быть от 1 до 10.')
+        return value
+
+    def validate(self, attrs):
+        title = self.context.get('request').get('titles_id')
+        if Review.objects.filter(
+                title=title, author=attrs.get('author')
+        ).exists():
+            raise serializers.ValidationError(
+                'Пользователь может оставить только один отзыв к произведению!'
+            )
+        return attrs
 
 
 class CommentSerializer(AuthorFieldMixin, serializers.ModelSerializer):
