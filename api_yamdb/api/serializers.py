@@ -2,8 +2,8 @@ from django.contrib.auth import get_user_model
 from rest_framework import serializers, status
 from rest_framework.relations import SlugRelatedField
 
-from reviews.models import (Comment, Genre, Group, MAX_SCORE, MIN_SCORE,
-                            Title, Review)
+from reviews.constants import MAX_SCORE, MIN_SCORE
+from reviews.models import Comment, Genre, Group, Title, Review
 from .mixins import AuthorFieldMixin
 
 User = get_user_model()
@@ -23,11 +23,16 @@ class TitleSerializer(serializers.ModelSerializer):
     group = serializers.SlugRelatedField(
         read_only=True, slug_field='slug'
     )
+    raiting = serializers.SerializerMethodField()
     # genre =
 
     class Meta:
         fields = '__all__'
         model = Title
+
+    def get_raiting(self, obj):
+        title = self.context.get('titles_id')
+        return Review.objects.filter(title=title).annotate()
 
 
 class ReviewSerializer(AuthorFieldMixin, serializers.ModelSerializer):
@@ -56,7 +61,6 @@ class GenreSerializer(serializers.ModelSerializer):
     """Сериализатор жанров."""
 
     class Meta:
-
         fields = ('name', 'slug')
         model = Genre
 
