@@ -7,7 +7,6 @@ from reviews.constants import LIMIT_TEXT, MAX_LENGTH
 User = get_user_model()
 
 
-
 class CreatedAt(models.Model):
     """Абстрактная модель автодобавления даты создания записи"""
 
@@ -110,3 +109,4 @@ class GenreTitle(models.Model):
         null=True,
         verbose_name="Жанр", 
     )
+
