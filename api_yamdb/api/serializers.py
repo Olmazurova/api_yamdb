@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.db.models import Avg, IntegerField
 from rest_framework import serializers, status
 from rest_framework.relations import SlugRelatedField
 
@@ -31,8 +32,11 @@ class TitleSerializer(serializers.ModelSerializer):
         model = Title
 
     def get_raiting(self, obj):
-        title = self.context.get('titles_id')
-        return Review.objects.filter(title=title).annotate()
+        title = obj.id
+        result = Review.objects.filter(title=title).aggregate(
+            raiting=Avg('score', output_field=IntegerField())
+        )
+        return result.get('raiting')
 
 
 class ReviewSerializer(AuthorFieldMixin, serializers.ModelSerializer):
