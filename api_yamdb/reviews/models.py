@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from django.urls import reverse
 
-from composition.constants import LIMIT_TEXT, MAX_LENGTH
+from reviews.constants import LIMIT_TEXT, MAX_LENGTH
 
 User = get_user_model()
 
@@ -18,10 +18,10 @@ class CreatedAt(models.Model):
     class Meta:
         abstract = True
 
-class Category(models.Model):
+class Group(models.Model):
     """Категории."""
 
-    title = models.CharField(
+    name = models.CharField(
         max_length=MAX_LENGTH,
         verbose_name="Заголовок"
     )
@@ -37,7 +37,7 @@ class Category(models.Model):
     def __str__(self):
         return self.title[:LIMIT_TEXT]
 
-class Titles(models.Model):
+class Title(models.Model):
     """Произведения."""
 
     name = models.CharField(
@@ -48,18 +48,18 @@ class Titles(models.Model):
         verbose_name="Год выпуска"
     )
 
-    category = models.ForeignKey(
-        Category,
+    group = models.ForeignKey(
+        Group,
         on_delete=models.CASCADE,
         null=True,
         verbose_name="Категория",
     )
 
-class Reviews(CreatedAt):
+class Review(CreatedAt):
     """Рецензии."""
 
     title = models.ForeignKey(
-        Titles,
+        Title,
         on_delete=models.CASCADE,
         null=True,
         verbose_name="Произведение", 
@@ -76,7 +76,7 @@ class Reviews(CreatedAt):
         verbose_name="Оценка"
     )
 
-class Genres(models.Model):
+class Genre(models.Model):
     """Жанры."""
     name = models.CharField(
         max_length=MAX_LENGTH,
@@ -90,8 +90,8 @@ class Genres(models.Model):
 class Comment(CreatedAt):
     """Комментарии к произведениям."""
 
-    reviews = models.ForeignKey(
-        Reviews, on_delete=models.CASCADE, related_name='comments')
+    review = models.ForeignKey(
+        Review, on_delete=models.CASCADE, related_name='comments')
     text = models.TextField()
     author = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='comments')
@@ -99,13 +99,13 @@ class Comment(CreatedAt):
 class GenreTitle(models.Model):
     """Соответствие произведения жанрам."""
     title = models.ForeignKey(
-        Titles,
+        Title,
         on_delete=models.CASCADE,
         null=True,
         verbose_name="Произведение", 
     )
     genre = models.ForeignKey(
-        Genres,
+        Genre,
         on_delete=models.CASCADE,
         null=True,
         verbose_name="Жанр", 

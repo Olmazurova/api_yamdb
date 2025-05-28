@@ -1,30 +1,30 @@
 from rest_framework import serializers, status
 from rest_framework.relations import SlugRelatedField
 
-from reviews.models import Category, Titles, Reviews, Genres, Comment, User
+from reviews.models import Group, Title, Review, Genre, Comment, User
 
 
-class CategorySerializer(serializers.ModelSerializer):
+class GroupSerializer(serializers.ModelSerializer):
     """Сериализатор категорий."""
 
     class Meta:
         fields = '__all__'
-        model = Category
+        model = Group
 
 
-class TitlesSerializer(serializers.ModelSerializer):
+class TitleSerializer(serializers.ModelSerializer):
     """Сериализатор произведений."""
-    category = serializers.SlugRelatedField(
+    group = serializers.SlugRelatedField(
         read_only=True, slug_field='slug'
     )
     # genre = 
 
     class Meta:
         fields = '__all__'
-        model = Titles
+        model = Title
 
 
-class ReviewsSerializer(serializers.ModelSerializer):
+class ReviewSerializer(serializers.ModelSerializer):
     """Сериализатор рецензий."""
     author = serializers.SlugRelatedField(
         read_only=True, slug_field='username',
@@ -32,21 +32,21 @@ class ReviewsSerializer(serializers.ModelSerializer):
 
     class Meta:
         fields = '__all__'
-        model = Reviews
+        model = Review
 
 
-class GenresSerializer(serializers.ModelSerializer):
+class GenreSerializer(serializers.ModelSerializer):
     """Сериализатор жанров."""
 
     class Meta:
 
         fields = ('name', 'slug')
-        model = Genres
+        model = Genre
 
 
 class CommentSerializer(serializers.ModelSerializer):
     """Сериализатор комментариев."""
-    reviews = serializers.StringRelatedField(
+    review = serializers.StringRelatedField(
         read_only=True,
     )
     author = serializers.StringRelatedField(
