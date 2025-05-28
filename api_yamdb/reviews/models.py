@@ -62,6 +62,7 @@ class Review(CreatedAt):
 
     title = models.ForeignKey(
         Title,
+        null=False,
         on_delete=models.CASCADE,
         verbose_name='Произведение',
         related_name='reviews',
@@ -126,11 +127,13 @@ class GenreTitle(models.Model):
         Title,
         on_delete=models.CASCADE,
         null=True,
+        default=None,
         verbose_name='Произведение',
     )
     genre = models.ForeignKey(
         Genre,
         on_delete=models.CASCADE,
         null=True,
+        default=None,
         verbose_name='Жанр',
     )
