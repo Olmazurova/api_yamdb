@@ -1,11 +1,11 @@
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404
 from rest_framework import filters, mixins, viewsets
 
 from api.serializers import (
     GroupSerializer, TitleSerializer, ReviewSerializer,
     GenreSerializer, CommentSerializer
 )
-from reviews.models import Group, Title, Review, Genre, Comment, User
+from reviews.models import Comment, Genre, Group, Review, Title
 
 
 class GroupViewSet(viewsets.ModelViewSet):
@@ -24,7 +24,7 @@ class TitleViewSet(viewsets.ModelViewSet):
 
 class ReviewViewSet(viewsets.ModelViewSet):
     """ViewSet модели Review."""
-    queryset = Review.objects.all()
+
     serializer_class = ReviewSerializer
     # permission_classes = 
 
@@ -38,6 +38,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
         return Review.objects.filter(
             title_id=self.get_title_id()
         )
+
 
 class CommentViewSet(viewsets.ModelViewSet):
     """ViewSet модели Comment."""
@@ -56,9 +57,6 @@ class CommentViewSet(viewsets.ModelViewSet):
             review_id=self.get_review_id()
         )
 
-
-class GenreViewSet(viewsets.ModelViewSet):
-    """ViewSet модели Genre."""
-    queryset = Genre.objects.all()
-    serializer_class = GenreSerializer
-    # permission_classes =
+    def perform_create(self, serializer):
+        review = get_object_or_404(Review, id=self.kwargs.get('review_id'))
+        return serializer.save(author=self.request.user, review=review)
