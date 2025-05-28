@@ -8,7 +8,7 @@ User = get_user_model()
 
 
 class CreatedAt(models.Model):
-    """Абстрактная модель автодобавления даты создания записи"""
+    """Абстрактная модель автодобавления даты создания записи."""
 
     pub_date = models.DateTimeField(
         auto_now_add=True, verbose_name='Добавлено', db_index=True
@@ -35,7 +35,7 @@ class Group(models.Model):
         verbose_name_plural = 'Категории'
 
     def __str__(self):
-        return self.title[:LIMIT_TEXT]
+        return self.name[:LIMIT_TEXT]
 
 
 class Title(models.Model):
@@ -63,7 +63,6 @@ class Review(CreatedAt):
     title = models.ForeignKey(
         Title,
         on_delete=models.CASCADE,
-        null=True,
         verbose_name='Произведение',
         related_name='reviews',
     )
