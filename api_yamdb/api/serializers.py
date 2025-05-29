@@ -13,20 +13,26 @@ class GroupSerializer(serializers.ModelSerializer):
     """Сериализатор категорий."""
 
     class Meta:
-        fields = '__all__'
+        fields = ('name', 'slug')
         model = Group
+
+class GenreSerializer(serializers.ModelSerializer):
+    """Сериализатор жанров."""
+
+    class Meta:
+
+        fields = ('name', 'slug')
+        model = Genre
 
 
 class TitleSerializer(serializers.ModelSerializer):
     """Сериализатор произведений."""
 
-    group = serializers.SlugRelatedField(
-        read_only=True, slug_field='slug'
-    )
-    # genre =
+    category = GroupSerializer(read_only=True, source='group')
+    genre = GenreSerializer(read_only=True, many=True)
 
     class Meta:
-        fields = '__all__'
+        fields = ('id', 'name', 'year', 'description', 'genre', 'category')
         model = Title
 
 
@@ -51,14 +57,6 @@ class ReviewSerializer(AuthorFieldMixin, serializers.ModelSerializer):
                 'Пользователь может оставить только один отзыв к произведению!'
             )
         return attrs
-
-class GenreSerializer(serializers.ModelSerializer):
-    """Сериализатор жанров."""
-
-    class Meta:
-
-        fields = ('name', 'slug')
-        model = Genre
 
 
 class CommentSerializer(AuthorFieldMixin, serializers.ModelSerializer):
