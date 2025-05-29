@@ -55,3 +55,11 @@ class CommentViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         review = get_object_or_404(Review, id=self.get_review_id())
         return serializer.save(author=self.request.user, review=review)
+
+
+class GenreViewSet(viewsets.ModelViewSet):
+    """ViewSet модели Genre."""
+
+    queryset = Genre.objects.all()
+    serializer_class = GenreSerializer
+    # permission_classes = 
