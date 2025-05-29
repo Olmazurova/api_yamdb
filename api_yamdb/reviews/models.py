@@ -42,6 +42,18 @@ class Group(models.Model):
         return self.name[:LIMIT_TEXT]
 
 
+class Genre(models.Model):
+    """Жанры."""
+    name = models.CharField(
+        max_length=MAX_LENGTH,
+        verbose_name='Заголовок'
+    )
+    slug = models.SlugField(
+        unique=True,
+        verbose_name='Идентификатор',
+    )
+
+
 class Title(models.Model):
     """Произведения."""
 
@@ -57,6 +69,22 @@ class Title(models.Model):
         Group,
         on_delete=models.CASCADE,
         verbose_name='Категория',
+    )
+    description = models.TextField()
+    genre = models.ManyToManyField(Genre, through='GenreTitle')
+
+
+class GenreTitle(models.Model):
+    """Соответствие произведения жанрам."""
+    title = models.ForeignKey(
+        Title,
+        on_delete=models.CASCADE,
+        verbose_name='Произведение',
+    )
+    genre = models.ForeignKey(
+        Genre,
+        on_delete=models.CASCADE,
+        verbose_name='Жанр',
     )
 
 
@@ -93,18 +121,6 @@ class Review(CreatedAt):
             ),
         ]
 
-
-class Genre(models.Model):
-    """Жанры."""
-    name = models.CharField(
-        max_length=MAX_LENGTH,
-        verbose_name='Заголовок'
-    )
-    slug = models.SlugField(
-        unique=True,
-        verbose_name='Идентификатор',
-    )
-
 class Comment(CreatedAt):
     """Комментарии к произведениям."""
 
@@ -118,19 +134,3 @@ class Comment(CreatedAt):
         ordering = ('pub_date',)
         verbose_name = 'комментарий'
         verbose_name_plural = 'Комментарии'
-
-
-class GenreTitle(models.Model):
-    """Соответствие произведения жанрам."""
-    title = models.ForeignKey(
-        Title,
-        on_delete=models.CASCADE,
-        null=True,
-        verbose_name='Произведение',
-    )
-    genre = models.ForeignKey(
-        Genre,
-        on_delete=models.CASCADE,
-        null=True,
-        verbose_name='Жанр',
-    )

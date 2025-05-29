@@ -1,10 +1,10 @@
 import csv
 import sqlite3
 
-con = sqlite3.connect('db.sqlite3')
+con = sqlite3.connect('api_yamdb/db.sqlite3')
 cur = con.cursor()
 
-with open('static/data/category.csv', newline='', encoding='utf-8') as csvfile:
+with open('api_yamdb/static/data/category.csv', newline='', encoding='utf-8') as csvfile:
     reader = csv.DictReader(csvfile)
     for row in reader:
         cur.execute(
@@ -13,7 +13,7 @@ with open('static/data/category.csv', newline='', encoding='utf-8') as csvfile:
         )
 
 
-with open('static/data/comments.csv', newline='', encoding='utf-8') as csvfile:
+with open('api_yamdb/static/data/comments.csv', newline='', encoding='utf-8') as csvfile:
     reader = csv.DictReader(csvfile)
     for row in reader:
         cur.execute(
@@ -22,7 +22,7 @@ with open('static/data/comments.csv', newline='', encoding='utf-8') as csvfile:
         )
 
 
-with open('static/data/genre_title.csv', newline='', encoding='utf-8') as csvfile:
+with open('api_yamdb/static/data/genre_title.csv', newline='', encoding='utf-8') as csvfile:
     reader = csv.DictReader(csvfile)
     for row in reader:
         cur.execute(
@@ -31,7 +31,7 @@ with open('static/data/genre_title.csv', newline='', encoding='utf-8') as csvfil
         )
 
 
-with open('static/data/genre.csv', newline='', encoding='utf-8') as csvfile:
+with open('api_yamdb/static/data/genre.csv', newline='', encoding='utf-8') as csvfile:
     reader = csv.DictReader(csvfile)
     for row in reader:
         cur.execute(
@@ -40,7 +40,7 @@ with open('static/data/genre.csv', newline='', encoding='utf-8') as csvfile:
         )
 
 
-with open('static/data/review.csv', newline='', encoding='utf-8') as csvfile:
+with open('api_yamdb/static/data/review.csv', newline='', encoding='utf-8') as csvfile:
     reader = csv.DictReader(csvfile)
     for row in reader:
         cur.execute(
@@ -49,7 +49,7 @@ with open('static/data/review.csv', newline='', encoding='utf-8') as csvfile:
         )
 
 
-with open('static/data/titles.csv', newline='', encoding='utf-8') as csvfile:
+with open('api_yamdb/static/data/titles.csv', newline='', encoding='utf-8') as csvfile:
     reader = csv.DictReader(csvfile)
     for row in reader:
         cur.execute(
@@ -57,13 +57,13 @@ with open('static/data/titles.csv', newline='', encoding='utf-8') as csvfile:
             (row['id'], row['name'], row['year'], row['category'])
         )
 
-# with open('static/data/users.csv', newline='', encoding='utf-8') as csvfile:
-#     reader = csv.DictReader(csvfile)
-#     for row in reader:
-#         cur.execute(
-#             'INSERT INTO auth_user VALUES(?, ?, ?, ?);',
-#             (row['id'], row['name'], row['year'], row['category'])
-#         )
+with open('api_yamdb/static/data/users.csv', newline='', encoding='utf-8') as csvfile:
+    reader = csv.DictReader(csvfile)
+    for row in reader:
+        cur.execute(
+            'INSERT INTO auth_user VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);',
+            (row['id'], 'password', '', False, row['username'], row['last_name'], row['email'], False, True, '', row['first_name'])
+        )
 
 con.commit()
 con.close()
