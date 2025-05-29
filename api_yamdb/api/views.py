@@ -2,8 +2,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework import filters, mixins, viewsets
 
 from api.serializers import (
-    GroupSerializer, TitleSerializer, ReviewSerializer,
-    GenreSerializer, CommentSerializer
+    GroupSerializer, TitleSerializer, ReviewSerializer, CommentSerializer
 )
 from reviews.models import Comment, Genre, Group, Review, Title
 
@@ -29,12 +28,10 @@ class ReviewViewSet(viewsets.ModelViewSet):
     # permission_classes = 
 
     def get_title_id(self):
-        title_id = self.kwargs.get("title_id")
-
+        title_id = self.kwargs.get('title_id')
         return title_id
 
     def get_queryset(self):
-
         return Review.objects.filter(
             title_id=self.get_title_id()
         )
@@ -47,18 +44,16 @@ class CommentViewSet(viewsets.ModelViewSet):
     # permission_classes =
 
     def get_review_id(self):
-        review_id = self.kwargs.get("review_id")
-
+        review_id = self.kwargs.get('review_id')
         return review_id
 
     def get_queryset(self):
-
         return Comment.objects.filter(
             review_id=self.get_review_id()
         )
 
     def perform_create(self, serializer):
-        review = get_object_or_404(Review, id=self.kwargs.get('review_id'))
+        review = get_object_or_404(Review, id=self.get_review_id())
         return serializer.save(author=self.request.user, review=review)
 
 

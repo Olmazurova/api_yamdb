@@ -1,12 +1,8 @@
 from django.contrib.auth import get_user_model
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from django.urls import reverse
 
-from reviews.constants import LIMIT_TEXT, MAX_LENGTH
-
-MAX_SCORE = 10
-MIN_SCORE = 1
+from reviews.constants import LIMIT_TEXT, MAX_LENGTH, MAX_SCORE, MIN_SCORE
 
 User = get_user_model()
 
@@ -68,6 +64,7 @@ class Title(models.Model):
     group = models.ForeignKey(
         Group,
         on_delete=models.CASCADE,
+        null=True,
         verbose_name='Категория',
     )
     description = models.TextField()
@@ -93,6 +90,7 @@ class Review(CreatedAt):
 
     title = models.ForeignKey(
         Title,
+        null=False,
         on_delete=models.CASCADE,
         verbose_name='Произведение',
         related_name='reviews',
@@ -120,6 +118,7 @@ class Review(CreatedAt):
                 fields=('title', 'author'), name='unique_review'
             ),
         ]
+
 
 class Comment(CreatedAt):
     """Комментарии к произведениям."""
