@@ -28,9 +28,6 @@ class GenreSerializer(serializers.ModelSerializer):
 class TitleSerializer(serializers.ModelSerializer):
     """Сериализатор произведений."""
 
-    group = serializers.SlugRelatedField(
-        read_only=True, slug_field='slug'
-    )
     raiting = serializers.SerializerMethodField()
     category = GroupSerializer(read_only=True, source='group')
     genre = GenreSerializer(read_only=True, many=True)

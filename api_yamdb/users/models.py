@@ -1,4 +1,5 @@
 from django.contrib.auth.models import AbstractUser
+from django.utils.translation import gettext_lazy as _
 from django.db import models
 
 class User(AbstractUser):
@@ -21,6 +22,7 @@ class User(AbstractUser):
         blank=True,
         verbose_name='Код подтверждения'
     )
+    password = models.CharField(_('password'), max_length=128, blank=True, null=True)
 
     @property
     def is_admin(self):
