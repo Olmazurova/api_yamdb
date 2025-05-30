@@ -27,6 +27,7 @@ class TitleViewSet(viewsets.ModelViewSet):
     queryset = Title.objects.all()
     serializer_class = TitleSerializer
     permission_classes = [IsAdminOrReadOnly]
+    http_method_names = ['get', 'post', 'patch', 'delete']
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
@@ -34,6 +35,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
 
     serializer_class = ReviewSerializer
     permission_classes = [IsAuthorOrAdminOrModerator]
+    http_method_names = ['get', 'post', 'patch', 'delete']
 
     def get_title_id(self):
         title_id = self.kwargs.get('title_id')
@@ -44,12 +46,17 @@ class ReviewViewSet(viewsets.ModelViewSet):
             title_id=self.get_title_id()
         )
 
+    def perform_create(self, serializer):
+        title = get_object_or_404(Title, id=self.get_title_id())
+        return serializer.save(author=self.request.user, title=title)
+
 
 class CommentViewSet(viewsets.ModelViewSet):
     """ViewSet модели Comment."""
     
     serializer_class = CommentSerializer
     permission_classes = [IsAuthorOrAdminOrModerator]
+    http_method_names = ['get', 'post', 'patch', 'delete']
 
     def get_review_id(self):
         review_id = self.kwargs.get('review_id')
