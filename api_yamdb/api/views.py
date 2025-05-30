@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework import filters, mixins, viewsets
 
 from api.serializers import (
-    GroupSerializer, TitleSerializer, ReviewSerializer, CommentSerializer
+    GroupSerializer, TitleSerializer, ReviewSerializer, CommentSerializer, GenreSerializer
 )
 from reviews.models import Comment, Genre, Group, Review, Title
 
