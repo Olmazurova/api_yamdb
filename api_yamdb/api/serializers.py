@@ -37,7 +37,9 @@ class TitleSerializer(serializers.ModelSerializer):
 
 
     class Meta:
-        fields = ('id', 'name', 'year', 'description', 'genre', 'category')
+        fields = (
+            'id', 'name', 'year', 'raiting', 'description', 'genre', 'category'
+        )
         model = Title
 
     def get_raiting(self, obj):
