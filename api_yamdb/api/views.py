@@ -1,31 +1,39 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import filters, mixins, viewsets
 
+from users.permissions import (
+    IsAdmin, IsAuthorOrAdminOrModerator,
+    IsAdminOrReadOnly
+)
+
 from api.serializers import (
-    GroupSerializer, TitleSerializer, ReviewSerializer, CommentSerializer, GenreSerializer
+    GroupSerializer, TitleSerializer,
+    ReviewSerializer, CommentSerializer,
+    GenreSerializer
 )
 from reviews.models import Comment, Genre, Group, Review, Title
+
 
 
 class GroupViewSet(viewsets.ModelViewSet):
     """ViewSet модели Group."""
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
-    # permission_classes = 
+    permission_classes = [IsAdminOrReadOnly]
 
 
 class TitleViewSet(viewsets.ModelViewSet):
     """ViewSet модели Title."""
     queryset = Title.objects.all()
     serializer_class = TitleSerializer
-    # permission_classes = 
+    permission_classes = [IsAdminOrReadOnly]
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
     """ViewSet модели Review."""
 
     serializer_class = ReviewSerializer
-    # permission_classes = 
+    permission_classes = [IsAuthorOrAdminOrModerator]
 
     def get_title_id(self):
         title_id = self.kwargs.get('title_id')
@@ -41,7 +49,7 @@ class CommentViewSet(viewsets.ModelViewSet):
     """ViewSet модели Comment."""
     
     serializer_class = CommentSerializer
-    # permission_classes =
+    permission_classes = [IsAuthorOrAdminOrModerator]
 
     def get_review_id(self):
         review_id = self.kwargs.get('review_id')
@@ -62,4 +70,4 @@ class GenreViewSet(viewsets.ModelViewSet):
 
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
-    # permission_classes = 
+    permission_classes = [IsAdminOrReadOnly]
