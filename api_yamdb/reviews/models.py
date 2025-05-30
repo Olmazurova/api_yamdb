@@ -65,6 +65,7 @@ class Title(models.Model):
         Group,
         on_delete=models.CASCADE,
         null=True,
+        blank=True,
         verbose_name='Категория',
     )
     description = models.TextField()
