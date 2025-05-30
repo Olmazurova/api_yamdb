@@ -1,7 +1,9 @@
 from django.contrib.auth import get_user_model
 from django.db.models import Avg, IntegerField
 from rest_framework import serializers, status
-from rest_framework.relations import SlugRelatedField
+from rest_framework.fields import CurrentUserDefault
+from rest_framework.validators import UniqueTogetherValidator
+
 
 from reviews.constants import MAX_SCORE, MIN_SCORE
 from reviews.models import Comment, Genre, Group, Title, Review
@@ -28,27 +30,33 @@ class GenreSerializer(serializers.ModelSerializer):
 class TitleSerializer(serializers.ModelSerializer):
     """Сериализатор произведений."""
 
-    raiting = serializers.SerializerMethodField()
+    rating = serializers.SerializerMethodField()
     category = GroupSerializer(read_only=True, source='group')
     genre = GenreSerializer(read_only=True, many=True)
 
 
     class Meta:
         fields = (
-            'id', 'name', 'year', 'raiting', 'description', 'genre', 'category'
+            'id', 'name', 'year', 'rating', 'description', 'genre', 'category'
         )
         model = Title
 
-    def get_raiting(self, obj):
+    def get_rating(self, obj):
         title = obj.id
         result = Review.objects.filter(title=title).aggregate(
-            raiting=Avg('score', output_field=IntegerField())
+            rating=Avg('score', output_field=IntegerField())
         )
-        return result.get('raiting')
+        return result.get('rating')
 
 
 class ReviewSerializer(AuthorFieldMixin, serializers.ModelSerializer):
     """Сериализатор рецензий."""
+
+    author = serializers.SlugRelatedField(
+        slug_field='username',
+        default=CurrentUserDefault(),
+        read_only=True
+    )
 
     class Meta:
         model = Review
@@ -60,9 +68,9 @@ class ReviewSerializer(AuthorFieldMixin, serializers.ModelSerializer):
         return value
 
     def validate(self, attrs):
-        title = self.context.get('request').get('titles_id')
+        title = self.context.get('view').kwargs.get('title_id')
         if Review.objects.filter(
-                title=title, author=attrs.get('author')
+                title=title, author=CurrentUserDefault()(serializer_field=self)
         ).exists():
             raise serializers.ValidationError(
                 'Пользователь может оставить только один отзыв к произведению!'
@@ -72,10 +80,6 @@ class ReviewSerializer(AuthorFieldMixin, serializers.ModelSerializer):
 
 class CommentSerializer(AuthorFieldMixin, serializers.ModelSerializer):
     """Сериализатор комментариев."""
-
-    review = serializers.StringRelatedField(
-        read_only=True,
-    )
 
     class Meta:
         model = Comment
