@@ -53,17 +53,17 @@ with open('api_yamdb/static/data/titles.csv', newline='', encoding='utf-8') as c
     reader = csv.DictReader(csvfile)
     for row in reader:
         cur.execute(
-            'INSERT INTO reviews_title VALUES(?, ?, ?, ?);',
-            (row['id'], row['name'], row['year'], row['category'])
+            'INSERT INTO reviews_title VALUES(?, ?, ?, ?, ?);',
+            (row['id'], row['name'], row['year'], 'Какое-то описание', row['category'])
         )
 
-with open('api_yamdb/static/data/users.csv', newline='', encoding='utf-8') as csvfile:
-    reader = csv.DictReader(csvfile)
-    for row in reader:
-        cur.execute(
-            'INSERT INTO auth_user VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);',
-            (row['id'], 'password', '', False, row['username'], row['last_name'], row['email'], False, True, '', row['first_name'])
-        )
+# with open('api_yamdb/static/data/users.csv', newline='', encoding='utf-8') as csvfile:
+#     reader = csv.DictReader(csvfile)
+#     for row in reader:
+#         cur.execute(
+#             'INSERT INTO auth_user VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);',
+#             (row['id'], 'password', '', False, row['username'], row['last_name'], row['email'], False, True, '', row['first_name'])
+#         )
 
 con.commit()
 con.close()

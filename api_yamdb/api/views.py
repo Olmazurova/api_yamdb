@@ -1,9 +1,11 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import filters, mixins, viewsets
+from rest_framework import status
+from rest_framework.response import Response
 
 from users.permissions import (
     IsAdmin, IsAuthorOrAdminOrModerator,
-    IsAdminOrReadOnly
+    IsAdminOrReadOnly, IsOwnerOrReadOnly
 )
 
 from api.serializers import (
@@ -20,6 +22,13 @@ class GroupViewSet(viewsets.ModelViewSet):
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
     permission_classes = [IsAdminOrReadOnly]
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('name',)
+    lookup_field = 'slug'
+
+    def get_object(self):
+        slug = self.kwargs.get('slug')
+        return get_object_or_404(Group, slug=slug)
 
 
 class TitleViewSet(viewsets.ModelViewSet):
@@ -28,13 +37,16 @@ class TitleViewSet(viewsets.ModelViewSet):
     serializer_class = TitleSerializer
     permission_classes = [IsAdminOrReadOnly]
     http_method_names = ['get', 'post', 'patch', 'delete']
+    filter_backends = (filters.SearchFilter,)
+    # search_fields = ('name', 'year', 'group__slug', 'genre__slug')
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
     """ViewSet модели Review."""
 
     serializer_class = ReviewSerializer
-    permission_classes = [IsAuthorOrAdminOrModerator]
+    # permission_classes = [IsAuthorOrAdminOrModerator]
+    permission_classes = (IsOwnerOrReadOnly,)
     http_method_names = ['get', 'post', 'patch', 'delete']
 
     def get_title_id(self):
@@ -55,7 +67,8 @@ class CommentViewSet(viewsets.ModelViewSet):
     """ViewSet модели Comment."""
     
     serializer_class = CommentSerializer
-    permission_classes = [IsAuthorOrAdminOrModerator]
+    # permission_classes = [IsAuthorOrAdminOrModerator]
+    permission_classes = (IsOwnerOrReadOnly,)
     http_method_names = ['get', 'post', 'patch', 'delete']
 
     def get_review_id(self):
@@ -78,3 +91,10 @@ class GenreViewSet(viewsets.ModelViewSet):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
     permission_classes = [IsAdminOrReadOnly]
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('name',)
+    lookup_field = 'slug'
+
+    def get_object(self):
+        slug = self.kwargs.get('slug')
+        return get_object_or_404(Genre, slug=slug)

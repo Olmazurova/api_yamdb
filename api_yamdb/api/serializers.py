@@ -18,6 +18,10 @@ class GroupSerializer(serializers.ModelSerializer):
     class Meta:
         fields = ('name', 'slug')
         model = Group
+        lookup_field = 'slug'
+        # extra_kwargs = {
+        #     'url': {'lookup_field': 'slug'}
+        # }
 
 class GenreSerializer(serializers.ModelSerializer):
     """Сериализатор жанров."""
