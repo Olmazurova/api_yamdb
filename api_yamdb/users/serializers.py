@@ -2,6 +2,10 @@ import re
 
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
+# from rest_framework_simplejwt.serializers import (
+#     api_settings, TokenObtainSerializer, update_last_login
+# )
+# from rest_framework_simplejwt.tokens import RefreshToken
 
 User = get_user_model()
 
@@ -43,6 +47,38 @@ class UserRegistrationSerializer(serializers.Serializer):
             raise serializers.ValidationError('Этот username уже используется.')
 
         return attrs
+
+
+# class TokenSerializer(TokenObtainSerializer):
+#     """
+#     Сериализатор для получения токена
+#     с использованием username и confirmation_code.
+#     Наследован от сериализатора из rest_framework_simplejwt.
+#     """
+#
+#     @classmethod
+#     def get_token(cls, user):
+#         return RefreshToken.for_user(user)
+#
+#     def validate(self, attrs):
+#         data = super().validate(attrs)
+#
+#         confirmation_code = data.get('request').get('confirmation_code')
+#         if confirmation_code != self.user.confirmation_code:
+#             raise serializers.ValidationError(
+#                 'Неверный код подтверждения!'
+#             )
+#
+#         refresh = self.get_token(self.user)
+#
+#         data['token'] = str(refresh)
+#
+#         if api_settings.UPDATE_LAST_LOGIN:
+#             update_last_login(None, self.user)
+#
+#         return data
+
+
 
 
 class TokenObtainSerializer(serializers.Serializer):
