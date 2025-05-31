@@ -24,6 +24,13 @@ class User(AbstractUser):
     )
     password = models.CharField(_('password'), max_length=128, blank=True, null=True)
 
+    class Meta:
+        verbose_name = 'пользователь'
+        verbose_name_plural = 'Пользователи'
+
+    def __str__(self):
+        return self.username
+
     @property
     def is_admin(self):
         return self.role == self.Role.ADMIN or self.is_superuser

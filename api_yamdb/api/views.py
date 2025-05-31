@@ -19,6 +19,8 @@ from reviews.models import Comment, Genre, Group, Review, Title
 
 class GroupViewSet(viewsets.ModelViewSet):
     """ViewSet модели Group."""
+
+    # Здесь /category/ обрабатывает get и post, а /category/<slug>/ - только delete
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
     permission_classes = [IsAdminOrReadOnly]
@@ -88,6 +90,7 @@ class CommentViewSet(viewsets.ModelViewSet):
 class GenreViewSet(viewsets.ModelViewSet):
     """ViewSet модели Genre."""
 
+    # Здесь /genres/ обрабатывает get и post, а /genres/<slug>/ - только delete
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
     permission_classes = [IsAdminOrReadOnly]
