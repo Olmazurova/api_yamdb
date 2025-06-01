@@ -40,6 +40,7 @@ class Group(models.Model):
 
 class Genre(models.Model):
     """Жанры."""
+
     name = models.CharField(
         max_length=MAX_LENGTH,
         verbose_name='Заголовок'
@@ -48,6 +49,13 @@ class Genre(models.Model):
         unique=True,
         verbose_name='Идентификатор',
     )
+
+    class Meta:
+        verbose_name = 'жанр'
+        verbose_name_plural = 'Жанры'
+
+    def __str__(self):
+        return self.name[:LIMIT_TEXT]
 
 
 class Title(models.Model):
@@ -64,12 +72,19 @@ class Title(models.Model):
     group = models.ForeignKey(
         Group,
         on_delete=models.CASCADE,
-        null=True,
-        blank=True,
+        # null=True,
+        # blank=True,
         verbose_name='Категория',
     )
     description = models.TextField()
     genre = models.ManyToManyField(Genre, through='GenreTitle')
+
+    class Meta:
+        verbose_name = 'произведение'
+        verbose_name_plural = 'Произведения'
+
+    def __str__(self):
+        return self.name[:LIMIT_TEXT]
 
 
 class GenreTitle(models.Model):
@@ -120,6 +135,9 @@ class Review(CreatedAt):
             ),
         ]
 
+    def __str__(self):
+        return f'Отзыв {self.author} на {self.title}'
+
 
 class Comment(CreatedAt):
     """Комментарии к произведениям."""
@@ -134,3 +152,6 @@ class Comment(CreatedAt):
         ordering = ('pub_date',)
         verbose_name = 'комментарий'
         verbose_name_plural = 'Комментарии'
+
+    def __str__(self):
+        return f'Комментарий {self.author} на {self.review}'
