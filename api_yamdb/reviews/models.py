@@ -40,6 +40,7 @@ class Group(models.Model):
 
 class Genre(models.Model):
     """Жанры."""
+
     name = models.CharField(
         max_length=MAX_LENGTH,
         verbose_name='Заголовок'

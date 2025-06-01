@@ -2,6 +2,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework import filters, mixins, viewsets
 from rest_framework import status
 from rest_framework.response import Response
+from rest_framework.permissions import SAFE_METHODS
 
 from users.permissions import (
     IsAdmin, IsAuthorOrAdminOrModerator,
@@ -9,18 +10,21 @@ from users.permissions import (
 )
 
 from api.serializers import (
-    GroupSerializer, TitleSerializer,
+    GroupSerializer, TitleReadSerializer,
     ReviewSerializer, CommentSerializer,
-    GenreSerializer
+    GenreSerializer, TitleCreateSerializer
 )
 from reviews.models import Comment, Genre, Group, Review, Title
 
 
-
-class GroupViewSet(viewsets.ModelViewSet):
+class GroupViewSet(
+    mixins.ListModelMixin,
+    mixins.CreateModelMixin,
+    mixins.DestroyModelMixin,
+    viewsets.GenericViewSet
+):
     """ViewSet модели Group."""
 
-    # Здесь /category/ обрабатывает get и post, а /category/<slug>/ - только delete
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
     permission_classes = [IsAdminOrReadOnly]
@@ -36,11 +40,16 @@ class GroupViewSet(viewsets.ModelViewSet):
 class TitleViewSet(viewsets.ModelViewSet):
     """ViewSet модели Title."""
     queryset = Title.objects.all()
-    serializer_class = TitleSerializer
+    serializer_class = TitleReadSerializer
     permission_classes = [IsAdminOrReadOnly]
     http_method_names = ['get', 'post', 'patch', 'delete']
     filter_backends = (filters.SearchFilter,)
     # search_fields = ('name', 'year', 'group__slug', 'genre__slug')
+
+    # def get_serializer_class(self):
+    #     if self.request.method in SAFE_METHODS:
+    #         return TitleReadSerializer
+    #     return TitleCreateSerializer
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
@@ -87,10 +96,14 @@ class CommentViewSet(viewsets.ModelViewSet):
         return serializer.save(author=self.request.user, review=review)
 
 
-class GenreViewSet(viewsets.ModelViewSet):
+class GenreViewSet(
+    mixins.ListModelMixin,
+    mixins.CreateModelMixin,
+    mixins.DestroyModelMixin,
+    viewsets.GenericViewSet
+):
     """ViewSet модели Genre."""
 
-    # Здесь /genres/ обрабатывает get и post, а /genres/<slug>/ - только delete
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
     permission_classes = [IsAdminOrReadOnly]
