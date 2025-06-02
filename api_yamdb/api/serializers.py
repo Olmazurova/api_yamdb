@@ -34,7 +34,7 @@ class GenreSerializer(serializers.ModelSerializer):
 class TitleReadSerializer(serializers.ModelSerializer):
     """Сериализатор произведений."""
 
-    rating = serializers.SerializerMethodField()
+    rating = serializers.SerializerMethodField(read_only=True)
     category = GroupSerializer(
         read_only=True,
         source='group'
@@ -59,15 +59,15 @@ class TitleReadSerializer(serializers.ModelSerializer):
         return result.get('rating')
 
 
-# class TitleCreateSerializer(serializers.ModelSerializer):
-#     category = GroupSerializer(source='group')
-#     genre = GenreSerializer(many=True)
-#
-#     class Meta:
-#         model = Title
-#         fields = (
-#             'id', 'name', 'year', 'description', 'genre', 'category'
-#         )
+class TitleCreateSerializer(serializers.ModelSerializer):
+    category = serializers.PrimaryKeyRelatedField(queryset=Group.objects.all())
+    genre = GenreSerializer(many=True)
+
+    class Meta:
+        model = Title
+        fields = (
+            'id', 'name', 'year', 'description', 'genre', 'category'
+        )
 
 
 class ReviewSerializer(AuthorFieldMixin, serializers.ModelSerializer):

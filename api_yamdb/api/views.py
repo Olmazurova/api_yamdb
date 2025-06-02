@@ -40,16 +40,16 @@ class GroupViewSet(
 class TitleViewSet(viewsets.ModelViewSet):
     """ViewSet модели Title."""
     queryset = Title.objects.all()
-    serializer_class = TitleReadSerializer
+    # serializer_class = TitleReadSerializer
     permission_classes = [IsAdminOrReadOnly]
     http_method_names = ['get', 'post', 'patch', 'delete']
     filter_backends = (filters.SearchFilter,)
     # search_fields = ('name', 'year', 'group__slug', 'genre__slug')
 
-    # def get_serializer_class(self):
-    #     if self.request.method in SAFE_METHODS:
-    #         return TitleReadSerializer
-    #     return TitleCreateSerializer
+    def get_serializer_class(self):
+        if self.request.method in SAFE_METHODS:
+            return TitleReadSerializer
+        return TitleCreateSerializer
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
