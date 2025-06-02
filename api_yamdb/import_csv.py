@@ -113,6 +113,7 @@ with open(
             )
         )
 
+
 with open(
     'api_yamdb/static/data/users.csv',
     newline='',

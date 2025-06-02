@@ -1,5 +1,4 @@
-from rest_framework.permissions import BasePermission
-from rest_framework.permissions import SAFE_METHODS
+from rest_framework.permissions import SAFE_METHODS, BasePermission
 
 
 class IsAdmin(BasePermission):
@@ -19,43 +18,18 @@ class IsAdminOrReadOnly(BasePermission):
 
     def has_permission(self, request, view):
         return (
-            request.method in ('GET', 'HEAD', 'OPTIONS') or
+            request.method in SAFE_METHODS or
             (request.user.is_authenticated and
              (request.user.is_admin or request.user.is_superuser))
         )
-        # return (
-        #     request.method in SAFE_METHODS or
-        #     request.user.is_authenticated and request.user.is_admin
-        # )
 
 
-    # def has_object_permission(self, request, view, obj):
-
-    #     return (
-    #         request.method in ('HEAD', 'OPTIONS') or
-    #         request.user.is_authenticated and request.user.is_admin
-    #     )
-
-
-class IsAuthorOrAdminOrModerator(BasePermission):
+class IsAuthorOrReadOnly(BasePermission):
     """
-    Разрешение для доступа к объекту автору, администратору,
-    модератору или суперпользователю. Чтение разрешено всем.
+    Разрешения: анонимы могут смотреть всё, а CRUD авторизованные юзеры
+    и только своё, кому дал право создатель, могут всё.
     """
 
-    def has_object_permission(self, request, view, obj):
-        return (
-            request.method in ('GET', 'HEAD', 'OPTIONS') or
-            obj.author == request.user or
-            request.user.is_admin or
-            request.user.is_moderator or
-            request.user.is_superuser
-        )
-
-
-class IsOwnerOrReadOnly(BasePermission):
-    """Разрешения: анонимы могут смотреть всё, а CRUD авторизованные юзеры
-     и только своё, кому дал право создатель, могут всё."""
     def has_object_permission(self, request, view, obj):
 
         return (

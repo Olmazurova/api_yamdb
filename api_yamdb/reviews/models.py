@@ -70,7 +70,6 @@ class Title(models.Model):
     year = models.PositiveSmallIntegerField(
         verbose_name='Год выпуска'
     )
-
     group = models.ForeignKey(
         Group,
         on_delete=models.CASCADE,
@@ -92,6 +91,7 @@ class Title(models.Model):
 
 class GenreTitle(models.Model):
     """Соответствие произведения жанрам."""
+
     title = models.ForeignKey(
         Title,
         on_delete=models.CASCADE,
@@ -146,10 +146,12 @@ class Comment(CreatedAt):
     """Комментарии к произведениям."""
 
     review = models.ForeignKey(
-        Review, on_delete=models.CASCADE, related_name='comments')
+        Review, on_delete=models.CASCADE, related_name='comments'
+    )
     text = models.TextField()
     author = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='comments')
+        User, on_delete=models.CASCADE, related_name='comments'
+    )
 
     class Meta:
         ordering = ('pub_date',)
