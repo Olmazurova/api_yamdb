@@ -3,6 +3,7 @@ from rest_framework import filters, mixins, viewsets
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.permissions import SAFE_METHODS
+# from rest_framework.filters import DjangoFilterBackend
 
 from users.permissions import (
     IsAdmin, IsAuthorOrAdminOrModerator,
@@ -13,6 +14,7 @@ from api.serializers import (
     GroupSerializer, TitleReadSerializer,
     ReviewSerializer, CommentSerializer,
     GenreSerializer, TitleCreateSerializer
+    # GenreSerializer
 )
 from reviews.models import Comment, Genre, Group, Review, Title
 
@@ -32,24 +34,25 @@ class GroupViewSet(
     search_fields = ('name',)
     lookup_field = 'slug'
 
-    def get_object(self):
-        slug = self.kwargs.get('slug')
-        return get_object_or_404(Group, slug=slug)
+    # def get_object(self):
+    #     slug = self.kwargs.get('slug')
+    #     return get_object_or_404(Group, slug=slug)
 
 
 class TitleViewSet(viewsets.ModelViewSet):
     """ViewSet модели Title."""
     queryset = Title.objects.all()
-    # serializer_class = TitleReadSerializer
     permission_classes = [IsAdminOrReadOnly]
     http_method_names = ['get', 'post', 'patch', 'delete']
-    filter_backends = (filters.SearchFilter,)
-    # search_fields = ('name', 'year', 'group__slug', 'genre__slug')
+    # filter_backends = (filters.SearchFilter,)
+    # filter_backends = (DjangoFilterBackend,)
+    search_fields = ('genre', 'group')
 
     def get_serializer_class(self):
         if self.request.method in SAFE_METHODS:
             return TitleReadSerializer
         return TitleCreateSerializer
+
 
 
 class ReviewViewSet(viewsets.ModelViewSet):

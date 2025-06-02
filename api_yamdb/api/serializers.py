@@ -18,7 +18,7 @@ class GroupSerializer(serializers.ModelSerializer):
     class Meta:
         fields = ('name', 'slug')
         model = Group
-        lookup_field = 'slug'
+        # lookup_field = 'slug'
         # extra_kwargs = {
         #     'url': {'lookup_field': 'slug'}
         # }
@@ -34,16 +34,15 @@ class GenreSerializer(serializers.ModelSerializer):
 class TitleReadSerializer(serializers.ModelSerializer):
     """Сериализатор произведений."""
 
-    rating = serializers.SerializerMethodField(read_only=True)
+    rating = serializers.SerializerMethodField()
     category = GroupSerializer(
         read_only=True,
-        source='group'
+        source='group',
     )
     genre = GenreSerializer(
         read_only=True,
         many=True
     )
-
 
     class Meta:
         fields = (
@@ -60,8 +59,16 @@ class TitleReadSerializer(serializers.ModelSerializer):
 
 
 class TitleCreateSerializer(serializers.ModelSerializer):
-    category = serializers.PrimaryKeyRelatedField(queryset=Group.objects.all())
-    genre = GenreSerializer(many=True)
+    category = serializers.SlugRelatedField(
+        slug_field='slug',
+        source='group',
+        queryset=Group.objects.all()
+    )
+    genre = serializers.SlugRelatedField(
+        slug_field='slug',
+        many=True,
+        queryset=Genre.objects.all()
+    )
 
     class Meta:
         model = Title
