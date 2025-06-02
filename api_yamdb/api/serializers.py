@@ -1,8 +1,8 @@
 from django.contrib.auth import get_user_model
 from django.db.models import Avg, IntegerField
-from rest_framework import serializers, status
+from rest_framework import serializers
 from rest_framework.fields import CurrentUserDefault
-from rest_framework.validators import UniqueTogetherValidator
+# from rest_framework.validators import UniqueTogetherValidator
 
 
 from reviews.constants import MAX_SCORE, MIN_SCORE
@@ -19,9 +19,7 @@ class GroupSerializer(serializers.ModelSerializer):
         fields = ('name', 'slug')
         model = Group
         # lookup_field = 'slug'
-        # extra_kwargs = {
-        #     'url': {'lookup_field': 'slug'}
-        # }
+
 
 class GenreSerializer(serializers.ModelSerializer):
     """Сериализатор жанров."""
