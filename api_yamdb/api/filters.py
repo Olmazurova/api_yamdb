@@ -3,9 +3,8 @@ from reviews.models import Title
 
 
 class TitleFilter(filters.FilterSet):
-    """
-    Собственный фильтр для TitleViewSet.
-    """
+    """Собственный фильтр для TitleViewSet."""
+
     genre = filters.CharFilter(
         field_name='genre__slug',
         lookup_expr='exact'

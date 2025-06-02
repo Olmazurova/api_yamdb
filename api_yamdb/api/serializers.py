@@ -2,8 +2,6 @@ from django.contrib.auth import get_user_model
 from django.db.models import Avg, IntegerField
 from rest_framework import serializers
 from rest_framework.fields import CurrentUserDefault
-# from rest_framework.validators import UniqueTogetherValidator
-
 
 from reviews.constants import MAX_SCORE, MIN_SCORE
 from reviews.models import Comment, Genre, Group, Title, Review
@@ -18,7 +16,6 @@ class GroupSerializer(serializers.ModelSerializer):
     class Meta:
         fields = ('name', 'slug')
         model = Group
-        # lookup_field = 'slug'
 
 
 class GenreSerializer(serializers.ModelSerializer):
@@ -30,7 +27,7 @@ class GenreSerializer(serializers.ModelSerializer):
 
 
 class TitleReadSerializer(serializers.ModelSerializer):
-    """Сериализатор произведений."""
+    """Сериализатор произведений для чтения."""
 
     rating = serializers.SerializerMethodField()
     category = GroupSerializer(
@@ -57,6 +54,8 @@ class TitleReadSerializer(serializers.ModelSerializer):
 
 
 class TitleCreateSerializer(serializers.ModelSerializer):
+    """Сериализатор произведений для записи."""
+
     category = serializers.SlugRelatedField(
         slug_field='slug',
         source='group',
@@ -89,10 +88,8 @@ class ReviewSerializer(AuthorFieldMixin, serializers.ModelSerializer):
 
     def validate(self, attrs):
         title = self.context.get('view').kwargs.get('title_id')
-
         if self.instance:
             return attrs
-
         if Review.objects.filter(
                 title=title, author=CurrentUserDefault()(serializer_field=self)
         ).exists():
