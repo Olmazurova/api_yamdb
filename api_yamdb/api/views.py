@@ -3,7 +3,7 @@ from rest_framework import filters, mixins, viewsets
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.permissions import SAFE_METHODS
-from rest_framework.filters import DjangoFilterBackend
+# from rest_framework.filters import DjangoFilterBackend
 
 from users.permissions import (
     IsAdmin, IsAuthorOrAdminOrModerator,
@@ -45,7 +45,7 @@ class TitleViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAdminOrReadOnly]
     http_method_names = ['get', 'post', 'patch', 'delete']
     # filter_backends = (filters.SearchFilter,)
-    filter_backends = (DjangoFilterBackend,)
+    # filter_backends = (DjangoFilterBackend,)
     search_fields = ('genre', 'group')
 
     def get_serializer_class(self):
