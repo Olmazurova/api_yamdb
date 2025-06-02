@@ -54,7 +54,6 @@ class TitleViewSet(viewsets.ModelViewSet):
         return TitleCreateSerializer
 
 
-
 class ReviewViewSet(viewsets.ModelViewSet):
     """ViewSet модели Review."""
 

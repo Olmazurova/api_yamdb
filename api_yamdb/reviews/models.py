@@ -33,6 +33,7 @@ class Group(models.Model):
     class Meta:
         verbose_name = 'категория'
         verbose_name_plural = 'Категории'
+        ordering = ('id',)
 
     def __str__(self):
         return self.name[:LIMIT_TEXT]
@@ -53,6 +54,7 @@ class Genre(models.Model):
     class Meta:
         verbose_name = 'жанр'
         verbose_name_plural = 'Жанры'
+        ordering = ('id',)
 
     def __str__(self):
         return self.name[:LIMIT_TEXT]
@@ -82,6 +84,7 @@ class Title(models.Model):
     class Meta:
         verbose_name = 'произведение'
         verbose_name_plural = 'Произведения'
+        ordering = ('id',)
 
     def __str__(self):
         return self.name[:LIMIT_TEXT]

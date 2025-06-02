@@ -91,6 +91,10 @@ class ReviewSerializer(AuthorFieldMixin, serializers.ModelSerializer):
 
     def validate(self, attrs):
         title = self.context.get('view').kwargs.get('title_id')
+
+        if self.instance:
+            return attrs
+
         if Review.objects.filter(
                 title=title, author=CurrentUserDefault()(serializer_field=self)
         ).exists():
