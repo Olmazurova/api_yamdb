@@ -33,6 +33,7 @@ class Group(models.Model):
     class Meta:
         verbose_name = 'категория'
         verbose_name_plural = 'Категории'
+        ordering = ('id',)
 
     def __str__(self):
         return self.name[:LIMIT_TEXT]
@@ -40,6 +41,7 @@ class Group(models.Model):
 
 class Genre(models.Model):
     """Жанры."""
+
     name = models.CharField(
         max_length=MAX_LENGTH,
         verbose_name='Заголовок'
@@ -48,6 +50,14 @@ class Genre(models.Model):
         unique=True,
         verbose_name='Идентификатор',
     )
+
+    class Meta:
+        verbose_name = 'жанр'
+        verbose_name_plural = 'Жанры'
+        ordering = ('id',)
+
+    def __str__(self):
+        return self.name[:LIMIT_TEXT]
 
 
 class Title(models.Model):
@@ -60,7 +70,6 @@ class Title(models.Model):
     year = models.PositiveSmallIntegerField(
         verbose_name='Год выпуска'
     )
-
     group = models.ForeignKey(
         Group,
         on_delete=models.CASCADE,
@@ -71,9 +80,18 @@ class Title(models.Model):
     description = models.TextField()
     genre = models.ManyToManyField(Genre, through='GenreTitle')
 
+    class Meta:
+        verbose_name = 'произведение'
+        verbose_name_plural = 'Произведения'
+        ordering = ('id',)
+
+    def __str__(self):
+        return self.name[:LIMIT_TEXT]
+
 
 class GenreTitle(models.Model):
     """Соответствие произведения жанрам."""
+
     title = models.ForeignKey(
         Title,
         on_delete=models.CASCADE,
@@ -120,17 +138,25 @@ class Review(CreatedAt):
             ),
         ]
 
+    def __str__(self):
+        return f'Отзыв {self.author} на {self.title}'
+
 
 class Comment(CreatedAt):
     """Комментарии к произведениям."""
 
     review = models.ForeignKey(
-        Review, on_delete=models.CASCADE, related_name='comments')
+        Review, on_delete=models.CASCADE, related_name='comments'
+    )
     text = models.TextField()
     author = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='comments')
+        User, on_delete=models.CASCADE, related_name='comments'
+    )
 
     class Meta:
         ordering = ('pub_date',)
         verbose_name = 'комментарий'
         verbose_name_plural = 'Комментарии'
+
+    def __str__(self):
+        return f'Комментарий {self.author} на {self.review}'
