@@ -18,7 +18,7 @@ class GroupSerializer(serializers.ModelSerializer):
     class Meta:
         fields = ('name', 'slug')
         model = Group
-        lookup_field = 'slug'
+        # lookup_field = 'slug'
         # extra_kwargs = {
         #     'url': {'lookup_field': 'slug'}
         # }
@@ -37,13 +37,12 @@ class TitleReadSerializer(serializers.ModelSerializer):
     rating = serializers.SerializerMethodField()
     category = GroupSerializer(
         read_only=True,
-        source='group'
+        source='group',
     )
     genre = GenreSerializer(
         read_only=True,
         many=True
     )
-
 
     class Meta:
         fields = (
@@ -59,15 +58,23 @@ class TitleReadSerializer(serializers.ModelSerializer):
         return result.get('rating')
 
 
-# class TitleCreateSerializer(serializers.ModelSerializer):
-#     category = GroupSerializer(source='group')
-#     genre = GenreSerializer(many=True)
-#
-#     class Meta:
-#         model = Title
-#         fields = (
-#             'id', 'name', 'year', 'description', 'genre', 'category'
-#         )
+class TitleCreateSerializer(serializers.ModelSerializer):
+    category = serializers.SlugRelatedField(
+        slug_field='slug',
+        source='group',
+        queryset=Group.objects.all()
+    )
+    genre = serializers.SlugRelatedField(
+        slug_field='slug',
+        many=True,
+        queryset=Genre.objects.all()
+    )
+
+    class Meta:
+        model = Title
+        fields = (
+            'id', 'name', 'year', 'description', 'genre', 'category'
+        )
 
 
 class ReviewSerializer(AuthorFieldMixin, serializers.ModelSerializer):
