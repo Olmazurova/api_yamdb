@@ -2,7 +2,7 @@ from rest_framework import serializers
 from rest_framework.fields import CurrentUserDefault
 from rest_framework.filters import SearchFilter
 
-from users.permissions import IsAdminOrReadOnly, IsOwnerOrReadOnly
+from users.permissions import IsAdminOrReadOnly, IsAuthorOrReadOnly
 
 
 class AuthorFieldMixin(serializers.ModelSerializer):
@@ -19,10 +19,10 @@ class AdminPermissionMixin:
     permission_classes = (IsAdminOrReadOnly,)
 
 
-class OwnerPermissionMixin:
+class AuthorPermissionMixin:
     """Миксин добавляет класс разрешения для авторов отзывов и комментариев."""
 
-    permission_classes = (IsOwnerOrReadOnly,)
+    permission_classes = (IsAuthorOrReadOnly,)
 
 
 class HTTPMethodsMixin:

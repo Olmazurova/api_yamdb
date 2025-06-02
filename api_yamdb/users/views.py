@@ -12,6 +12,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from reviews.constants import MAX_LENGTH_EMAIL, MAX_LENGTH_NAME
 from .models import User
 from .permissions import IsAdmin
 from .serializers import (
@@ -28,6 +29,7 @@ class UserViewSet(viewsets.ModelViewSet):
     Позволяет искать пользователей по username и предоставляет
     эндпоинт 'me' для работы с собственным профилем пользователя.
     """
+
     queryset = User.objects.all()
     serializer_class = UserSerializer
     filter_backends = [filters.SearchFilter]
@@ -62,7 +64,7 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
 
         email = request.data.get('email')
-        if email and len(email) > 254:
+        if email and len(email) > MAX_LENGTH_EMAIL:
             return Response(
                 {'email': 'Email слишком длинный'},
                 status=status.HTTP_400_BAD_REQUEST
@@ -70,7 +72,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
         username = request.data.get('username')
         if username:
-            if len(username) > 150:
+            if len(username) > MAX_LENGTH_NAME:
                 return Response(
                     {'username': 'Username слишком длинный'},
                     status=status.HTTP_400_BAD_REQUEST
@@ -90,6 +92,7 @@ class SignupView(APIView):
     Регистрация пользователя.
     Создаёт пользователя и отправляет код подтверждения на email.
     """
+
     permission_classes = [AllowAny]
 
     def post(self, request):
@@ -122,22 +125,28 @@ class SignupView(APIView):
 
 
 class TokenView(APIView):
-    """
-    Получение JWT-токена на основе username и confirmation_code.
-    """
+    """Получение JWT-токена на основе username и confirmation_code."""
+
     permission_classes = [AllowAny]
 
     def post(self, request):
         serializer = TokenObtainSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        user = get_object_or_404(User, username=serializer.validated_data['username'])
+        user = get_object_or_404(
+            User, username=serializer.validated_data['username']
+        )
 
-        if user.confirmation_code != serializer.validated_data['confirmation_code']:
+        if user.confirmation_code != serializer.validated_data.get(
+                'confirmation_code'
+        ):
             return Response(
                 {'error': 'Неверный код подтверждения'},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
         refresh = RefreshToken.for_user(user)
-        return Response({'token': str(refresh.access_token)}, status=status.HTTP_200_OK)
+        return Response(
+            {'token': str(refresh.access_token)},
+            status=status.HTTP_200_OK
+        )

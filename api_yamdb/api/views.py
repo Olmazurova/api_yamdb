@@ -11,7 +11,7 @@ from api.serializers import (
 from reviews.models import Comment, Genre, Group, Review, Title
 from .filters import TitleFilter
 from .mixins import (
-    AdminPermissionMixin, OwnerPermissionMixin,
+    AdminPermissionMixin, AuthorPermissionMixin,
     HTTPMethodsMixin, SlugSearchFilterMixin
 )
 
@@ -46,7 +46,7 @@ class TitleViewSet(
 
 
 class ReviewViewSet(
-    OwnerPermissionMixin, HTTPMethodsMixin, viewsets.ModelViewSet
+    AuthorPermissionMixin, HTTPMethodsMixin, viewsets.ModelViewSet
 ):
     """ViewSet модели Review."""
 
@@ -67,7 +67,7 @@ class ReviewViewSet(
 
 
 class CommentViewSet(
-    OwnerPermissionMixin, HTTPMethodsMixin, viewsets.ModelViewSet
+    AuthorPermissionMixin, HTTPMethodsMixin, viewsets.ModelViewSet
 ):
     """ViewSet модели Comment."""
 
