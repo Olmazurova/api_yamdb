@@ -1,19 +1,15 @@
 from django.shortcuts import get_object_or_404
-from rest_framework import filters, mixins, viewsets
+from rest_framework import mixins, viewsets
 from rest_framework.permissions import SAFE_METHODS
 from django_filters.rest_framework import DjangoFilterBackend
 
-from api.serializers import (
-    GroupSerializer, TitleReadSerializer,
-    ReviewSerializer, CommentSerializer,
-    GenreSerializer, TitleCreateSerializer
-)
+from api.serializers import (CommentSerializer, GenreSerializer,
+                             GroupSerializer, ReviewSerializer,
+                             TitleCreateSerializer, TitleReadSerializer)
 from reviews.models import Comment, Genre, Group, Review, Title
 from .filters import TitleFilter
-from .mixins import (
-    AdminPermissionMixin, AuthorPermissionMixin,
-    HTTPMethodsMixin, SlugSearchFilterMixin
-)
+from .mixins import (AdminPermissionMixin, AuthorPermissionMixin,
+                     HTTPMethodsMixin, SlugSearchFilterMixin)
 
 
 class GroupViewSet(

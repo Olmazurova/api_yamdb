@@ -1,8 +1,8 @@
 from django.contrib.auth.models import AbstractUser
-from django.utils.translation import gettext_lazy as _
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
-from reviews.constants import MAX_LENGTH_CODE, MAX_LENGTH_ROLE, MAX_LENGTH_PSW
+from reviews.constants import MAX_LENGTH_CODE, MAX_LENGTH_PSW, MAX_LENGTH_ROLE
 
 
 class User(AbstractUser):
