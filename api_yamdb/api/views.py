@@ -1,9 +1,10 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import filters, mixins, viewsets
-from rest_framework import status
-from rest_framework.response import Response
+# from rest_framework import status
+# from rest_framework.response import Response
 from rest_framework.permissions import SAFE_METHODS
-# from rest_framework.filters import DjangoFilterBackend
+from django_filters.rest_framework import DjangoFilterBackend
+
 
 from users.permissions import (
     IsAdmin, IsAuthorOrAdminOrModerator,
@@ -17,6 +18,7 @@ from api.serializers import (
     # GenreSerializer
 )
 from reviews.models import Comment, Genre, Group, Review, Title
+from .filters import TitleFilter
 
 
 class GroupViewSet(
@@ -34,19 +36,15 @@ class GroupViewSet(
     search_fields = ('name',)
     lookup_field = 'slug'
 
-    # def get_object(self):
-    #     slug = self.kwargs.get('slug')
-    #     return get_object_or_404(Group, slug=slug)
-
 
 class TitleViewSet(viewsets.ModelViewSet):
     """ViewSet модели Title."""
     queryset = Title.objects.all()
     permission_classes = [IsAdminOrReadOnly]
     http_method_names = ['get', 'post', 'patch', 'delete']
-    # filter_backends = (filters.SearchFilter,)
-    # filter_backends = (DjangoFilterBackend,)
-    search_fields = ('genre', 'group')
+
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = TitleFilter
 
     def get_serializer_class(self):
         if self.request.method in SAFE_METHODS:
@@ -78,7 +76,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
 
 class CommentViewSet(viewsets.ModelViewSet):
     """ViewSet модели Comment."""
-    
+
     serializer_class = CommentSerializer
     # permission_classes = [IsAuthorOrAdminOrModerator]
     permission_classes = (IsOwnerOrReadOnly,)

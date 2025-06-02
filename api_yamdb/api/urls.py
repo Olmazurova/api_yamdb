@@ -24,6 +24,6 @@ router_v1.register(
 
 urlpatterns = [
     path('v1/auth/signup/', SignupView.as_view(), name='signup'),
-    path('v1/auth/token/', TokenView.as_view(), name='token'), # Может здесь нужен TokenObtainPairView.as_view()?
+    path('v1/auth/token/', TokenView.as_view(), name='token'),
     path('v1/', include(router_v1.urls)),
 ]
