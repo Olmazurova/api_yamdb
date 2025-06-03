@@ -12,7 +12,7 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from django_filters.rest_framework import DjangoFilterBackend
 
-from reviews.constants import MAX_LENGTH_EMAIL, MAX_LENGTH_NAME
+from .constants import MAX_LENGTH_EMAIL, MAX_LENGTH_NAME
 from api.serializers import (CommentSerializer, GenreSerializer,
                              GroupSerializer, ReviewSerializer,
                              TitleCreateSerializer, TitleReadSerializer,
