@@ -2,13 +2,14 @@ from django.contrib.auth import get_user_model
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
-from reviews.constants import LIMIT_TEXT, MAX_LENGTH, MAX_SCORE, MIN_SCORE
+from .constants import LIMIT_TEXT, MAX_LENGTH, MAX_SCORE, MIN_SCORE
+from .validators import year_validator
 
 User = get_user_model()
 
 
 class AuthorTextCreateModel(models.Model):
-    """Абстрактная модель автодобавления даты создания записи."""
+    """Абстрактная модель добавляет поля текст, автор и дата создания записи."""
 
     text = models.TextField(verbose_name='Текст')
     author = models.ForeignKey(
@@ -74,7 +75,8 @@ class Title(NameBaseModel):
     """Произведения."""
 
     year = models.PositiveSmallIntegerField(
-        verbose_name='Год выпуска'
+        verbose_name='Год выпуска',
+        validators=[year_validator,]
     )
     group = models.ForeignKey(
         Group,
