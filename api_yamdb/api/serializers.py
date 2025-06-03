@@ -158,6 +158,7 @@ class TokenObtainSerializer(serializers.Serializer):
     Сериализатор для получения токена
     с использованием username и confirmation_code.
     """
+
     username = serializers.CharField(required=True)
     confirmation_code = serializers.CharField(required=True)
 
