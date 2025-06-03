@@ -2,10 +2,11 @@ import secrets
 
 from django.conf import settings
 from django.core.mail import send_mail
+from django.db.models import Avg
 from django.shortcuts import get_object_or_404
-from rest_framework import mixins, viewsets, filters, status
+from rest_framework import mixins, filters, status
 from rest_framework.decorators import action
-from rest_framework.permissions import SAFE_METHODS, AllowAny, IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -21,7 +22,7 @@ from api.serializers import (CommentSerializer, GenreSerializer,
 from reviews.models import Comment, Genre, Group, Review, Title
 from .filters import TitleFilter
 from .mixins import (AdminPermissionMixin, AuthorPermissionMixin,
-                     HTTPMethodsMixin, SlugSearchFilterMixin)
+                     HTTPMethodsMixin, SlugSearchFilterMixin, GenreGroupMixin)
 from users.models import User
 from .permissions import IsAdmin
 
