@@ -9,7 +9,10 @@ User = get_user_model()
 
 
 class AuthorTextCreateModel(models.Model):
-    """Абстрактная модель добавляет поля текст, автор и дата создания записи."""
+    """
+    Абстрактная модель добавляет поля текст, 
+    автора и дата создания записи.
+    """
 
     text = models.TextField(verbose_name='Текст')
     author = models.ForeignKey(
