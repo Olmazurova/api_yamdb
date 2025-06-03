@@ -11,6 +11,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import viewsets
+from rest_framework.permissions import SAFE_METHODS
 
 from reviews.constants import MAX_LENGTH_EMAIL, MAX_LENGTH_NAME
 from api.serializers import (CommentSerializer, GenreSerializer,
@@ -45,7 +47,9 @@ class TitleViewSet(
 ):
     """ViewSet модели Title."""
 
-    queryset = Title.objects.all()
+    queryset = Title.objects.annotate(
+        rating=Avg('reviews__score')
+    ).order_by('-id')
     filter_backends = (DjangoFilterBackend,)
     filterset_class = TitleFilter
 
@@ -63,8 +67,7 @@ class ReviewViewSet(
     serializer_class = ReviewSerializer
 
     def get_title_id(self):
-        title_id = self.kwargs.get('title_id')
-        return title_id
+        return self.kwargs.get('title_id')
 
     def get_queryset(self):
         return Review.objects.filter(
@@ -73,7 +76,7 @@ class ReviewViewSet(
 
     def perform_create(self, serializer):
         title = get_object_or_404(Title, id=self.get_title_id())
-        return serializer.save(author=self.request.user, title=title)
+        serializer.save(author=self.request.user, title=title)
 
 
 class CommentViewSet(
@@ -84,8 +87,7 @@ class CommentViewSet(
     serializer_class = CommentSerializer
 
     def get_review_id(self):
-        review_id = self.kwargs.get('review_id')
-        return review_id
+        return self.kwargs.get('review_id')
 
     def get_queryset(self):
         return Comment.objects.filter(
@@ -94,17 +96,10 @@ class CommentViewSet(
 
     def perform_create(self, serializer):
         review = get_object_or_404(Review, id=self.get_review_id())
-        return serializer.save(author=self.request.user, review=review)
+        serializer.save(author=self.request.user, review=review)
 
 
-class GenreViewSet(
-    AdminPermissionMixin,
-    SlugSearchFilterMixin,
-    mixins.ListModelMixin,
-    mixins.CreateModelMixin,
-    mixins.DestroyModelMixin,
-    viewsets.GenericViewSet
-):
+class GenreViewSet(GenreGroupMixin):
     """ViewSet модели Genre."""
 
     queryset = Genre.objects.all()
