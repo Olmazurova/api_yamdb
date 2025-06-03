@@ -17,7 +17,7 @@ class GroupSerializer(serializers.ModelSerializer):
     """Сериализатор категорий."""
 
     class Meta:
-        fields = ('name', 'slug')
+        exclude = ('id',)
         model = Group
 
 
@@ -25,14 +25,14 @@ class GenreSerializer(serializers.ModelSerializer):
     """Сериализатор жанров."""
 
     class Meta:
-        fields = ('name', 'slug')
+        exclude = ('id',)
         model = Genre
 
 
 class TitleReadSerializer(serializers.ModelSerializer):
     """Сериализатор произведений для чтения."""
 
-    rating = serializers.SerializerMethodField()
+    rating = serializers.ReadOnlyField()
     category = GroupSerializer(
         read_only=True,
         source='group',
@@ -47,13 +47,6 @@ class TitleReadSerializer(serializers.ModelSerializer):
             'id', 'name', 'year', 'rating', 'description', 'genre', 'category'
         )
         model = Title
-
-    def get_rating(self, obj):
-        title = obj.id
-        result = Review.objects.filter(title=title).aggregate(
-            rating=Avg('score', output_field=IntegerField())
-        )
-        return result.get('rating')
 
 
 class TitleCreateSerializer(serializers.ModelSerializer):

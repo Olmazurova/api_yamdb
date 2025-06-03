@@ -22,6 +22,7 @@ INSTALLED_APPS = [
     'reviews.apps.ReviewsConfig',
     'users.apps.UsersConfig',
     'rest_framework_simplejwt',
+    'api_yamdb',
 ]
 
 MIDDLEWARE = [
