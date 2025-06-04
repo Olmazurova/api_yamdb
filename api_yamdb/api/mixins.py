@@ -1,6 +1,7 @@
 from rest_framework import mixins, serializers, viewsets
 from rest_framework.fields import CurrentUserDefault
 from rest_framework.filters import SearchFilter
+from rest_framework.permissions import AllowAny
 
 from api.permissions import IsAdminOrReadOnly, IsAuthorOrReadOnly
 
@@ -23,6 +24,12 @@ class AuthorPermissionMixin:
     """Миксин добавляет класс разрешения для авторов отзывов и комментариев."""
 
     permission_classes = (IsAuthorOrReadOnly,)
+
+
+class AllowAnyPermissionMixin:
+    """Миксин добавляет класс разрешения для всех."""
+
+    permission_classes = (AllowAny,)
 
 
 class HTTPMethodsMixin:
