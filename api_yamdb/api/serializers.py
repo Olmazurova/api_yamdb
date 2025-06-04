@@ -5,9 +5,11 @@ from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 from rest_framework.fields import CurrentUserDefault
 
-from reviews.models import Comment, Genre, Group, Title, Review
-from .constants import MAX_SCORE, MIN_SCORE, MAX_LENGTH_EMAIL, MAX_LENGTH_NAME
-from .mixins import AuthorFieldMixin
+from api.constants import (MAX_LENGTH_EMAIL, MAX_LENGTH_NAME, MAX_SCORE,
+                           MIN_SCORE)
+from api.mixins import AuthorFieldMixin
+from reviews.models import Comment, Genre, Group, Review, Title
+
 
 User = get_user_model()
 
