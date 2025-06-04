@@ -10,7 +10,6 @@ from api.constants import (MAX_LENGTH_EMAIL, MAX_LENGTH_NAME, MAX_SCORE,
 from api.mixins import AuthorFieldMixin
 from reviews.models import Comment, Genre, Group, Review, Title
 
-
 User = get_user_model()
 
 
@@ -80,7 +79,9 @@ class ReviewSerializer(AuthorFieldMixin, serializers.ModelSerializer):
 
     def validate_score(self, value):
         if value not in range(MIN_SCORE, MAX_SCORE + 1):
-            raise serializers.ValidationError('Оценка должна быть от 1 до 10.')
+            raise serializers.ValidationError(
+                f'Оценка должна быть от {MIN_SCORE} до {MAX_SCORE}.'
+            )
         return value
 
     def validate(self, attrs):
@@ -163,7 +164,7 @@ class TokenObtainSerializer(serializers.Serializer):
                 {'confirmation_code': 'Неверный код подтверждения'}
             )
 
-        data['user'] = user  # Добавляем user в validated_data
+        data['user'] = user
         return data
 
 

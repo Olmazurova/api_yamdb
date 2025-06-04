@@ -66,7 +66,9 @@ class Command(BaseCommand):
             reader = csv.DictReader(csvfile)
 
             for row in reader:
-                GenreTitle.objects.create(**row)
+                GenreTitle.objects.create(**row)  # теперь в БД она называется reviews_title_genre и явной модели для неё нет
+                # title = Title.objects.get(id=row['title_id']
+                # title.genre = row['genre_id']
 
         with open(
             'static/data/review.csv',
