@@ -79,7 +79,7 @@ class Title(NameBaseModel):
 
     year = models.PositiveSmallIntegerField(
         verbose_name='Год выпуска',
-        validators=[year_validator,]
+        validators=[year_validator]
     )
     group = models.ForeignKey(
         Group,
