@@ -1,0 +1,5 @@
+MAX_SCORE: int = 10
+MIN_SCORE: int = 1
+
+MAX_LENGTH_EMAIL: int = 254
+MAX_LENGTH_NAME: int = 150

@@ -1,12 +1,12 @@
-import re
 import secrets
 
 from django.conf import settings
 from django.core.mail import send_mail
+from django.db.models import Avg
 from django.shortcuts import get_object_or_404
-from rest_framework import mixins, viewsets, filters, status
+from rest_framework import mixins, filters, status
 from rest_framework.decorators import action
-from rest_framework.permissions import SAFE_METHODS, AllowAny, IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -14,7 +14,6 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
 from rest_framework.permissions import SAFE_METHODS
 
-from reviews.constants import MAX_LENGTH_EMAIL, MAX_LENGTH_NAME
 from api.serializers import (CommentSerializer, GenreSerializer,
                              GroupSerializer, ReviewSerializer,
                              TitleCreateSerializer, TitleReadSerializer,
@@ -23,7 +22,7 @@ from api.serializers import (CommentSerializer, GenreSerializer,
 from reviews.models import Comment, Genre, Group, Review, Title
 from .filters import TitleFilter
 from .mixins import (AdminPermissionMixin, AuthorPermissionMixin,
-                     HTTPMethodsMixin, SlugSearchFilterMixin)
+                     HTTPMethodsMixin, SlugSearchFilterMixin, GenreGroupMixin)
 from users.models import User
 from .permissions import IsAdmin
 
@@ -119,23 +118,18 @@ class UserViewSet(viewsets.ModelViewSet):
 
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    permission_classes = [IsAdmin]
     filter_backends = [filters.SearchFilter]
     search_fields = ['username']
     lookup_field = 'username'
     http_method_names = ['get', 'post', 'patch', 'delete', 'head', 'options']
 
-    def get_permissions(self):
-        if self.action == 'me':
-            permission_classes = [IsAuthenticated]
-        else:
-            permission_classes = [IsAdmin]
-        return [permission() for permission in permission_classes]
-
-    @action(detail=False, methods=['get', 'patch', 'delete'])
+    @action(
+        detail=False,
+        methods=['get', 'patch',],
+        permission_classes=[IsAuthenticated],
+    )
     def me(self, request):
-        if request.method == 'DELETE':
-            return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
-
         user = request.user
 
         if request.method == 'GET':

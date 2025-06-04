@@ -6,9 +6,8 @@ from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 from rest_framework.fields import CurrentUserDefault
 
-from reviews.constants import (MAX_SCORE, MIN_SCORE,
-                               MAX_LENGTH_EMAIL, MAX_LENGTH_NAME)
 from reviews.models import Comment, Genre, Group, Title, Review
+from .constants import MAX_SCORE, MIN_SCORE, MAX_LENGTH_EMAIL, MAX_LENGTH_NAME
 from .mixins import AuthorFieldMixin
 
 User = get_user_model()
@@ -151,6 +150,7 @@ class TokenObtainSerializer(serializers.Serializer):
     Сериализатор для получения токена
     с использованием username и confirmation_code.
     """
+
     username = serializers.CharField(required=True)
     confirmation_code = serializers.CharField(required=True)
 
