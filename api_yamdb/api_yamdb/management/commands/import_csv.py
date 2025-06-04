@@ -2,7 +2,7 @@ import csv
 
 from django.core.management.base import BaseCommand
 
-from reviews.models import (Comment, Genre, GenreTitle, Group, Review, Title,
+from reviews.models import (Comment, Genre, Group, Review, Title,
                             User)
 
 
@@ -66,7 +66,14 @@ class Command(BaseCommand):
             reader = csv.DictReader(csvfile)
 
             for row in reader:
-                GenreTitle.objects.create(**row)
+
+                title_id = row.pop('title_id')
+                genre_id = row.pop('genre_id')
+
+                title = Title.objects.get(id=title_id)
+                genre = Genre.objects.get(id=genre_id)
+
+                title.genre.add(genre)
 
         with open(
             'static/data/review.csv',
