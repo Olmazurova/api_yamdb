@@ -2,7 +2,7 @@ from rest_framework import mixins, serializers, viewsets
 from rest_framework.fields import CurrentUserDefault
 from rest_framework.filters import SearchFilter
 
-from .permissions import IsAdminOrReadOnly, IsAuthorOrReadOnly
+from api.permissions import IsAdminOrReadOnly, IsAuthorOrReadOnly
 
 
 class AuthorFieldMixin(serializers.ModelSerializer):

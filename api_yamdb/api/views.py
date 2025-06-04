@@ -4,37 +4,28 @@ from django.conf import settings
 from django.core.mail import send_mail
 from django.db.models import Avg
 from django.shortcuts import get_object_or_404
-from rest_framework import mixins, filters, status
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters, status, viewsets
 from rest_framework.decorators import action
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import SAFE_METHODS, AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import viewsets
-from rest_framework.permissions import SAFE_METHODS
 
+from api.filters import TitleFilter
+from api.mixins import (AdminPermissionMixin, AuthorPermissionMixin,
+                        GenreGroupMixin, HTTPMethodsMixin)
+from api.permissions import IsAdmin
 from api.serializers import (CommentSerializer, GenreSerializer,
                              GroupSerializer, ReviewSerializer,
                              TitleCreateSerializer, TitleReadSerializer,
                              TokenObtainSerializer, UserProfileSerializer,
                              UserRegistrationSerializer, UserSerializer)
 from reviews.models import Comment, Genre, Group, Review, Title
-from .filters import TitleFilter
-from .mixins import (AdminPermissionMixin, AuthorPermissionMixin,
-                     HTTPMethodsMixin, SlugSearchFilterMixin, GenreGroupMixin)
 from users.models import User
-from .permissions import IsAdmin
 
 
-class GroupViewSet(
-    AdminPermissionMixin,
-    SlugSearchFilterMixin,
-    mixins.ListModelMixin,
-    mixins.CreateModelMixin,
-    mixins.DestroyModelMixin,
-    viewsets.GenericViewSet
-):
+class GroupViewSet(GenreGroupMixin):
     """ViewSet модели Group."""
 
     queryset = Group.objects.all()
@@ -103,10 +94,6 @@ class GenreViewSet(GenreGroupMixin):
 
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
-
-    def get_object(self):
-        slug = self.kwargs.get('slug')
-        return get_object_or_404(Genre, slug=slug)
 
 
 class UserViewSet(viewsets.ModelViewSet):
