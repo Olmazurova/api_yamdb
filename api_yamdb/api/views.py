@@ -114,7 +114,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(
         detail=False,
-        methods=['get', 'patch',],
+        methods=['get', 'patch'],
         permission_classes=[IsAuthenticated],
     )
     def me(self, request):
