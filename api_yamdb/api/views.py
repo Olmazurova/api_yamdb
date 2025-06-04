@@ -20,11 +20,12 @@ from api.serializers import (CommentSerializer, GenreSerializer,
                              TokenObtainSerializer, UserProfileSerializer,
                              UserRegistrationSerializer, UserSerializer)
 from reviews.models import Comment, Genre, Group, Review, Title
-from .filters import TitleFilter
-from .mixins import (AdminPermissionMixin, AuthorPermissionMixin,
-                     HTTPMethodsMixin, SlugSearchFilterMixin, GenreGroupMixin)
+from api.filters import TitleFilter
+from api.mixins import (AdminPermissionMixin, AuthorPermissionMixin,
+                        HTTPMethodsMixin, SlugSearchFilterMixin,
+                        GenreGroupMixin)
 from users.models import User
-from .permissions import IsAdmin
+from api.permissions import IsAdmin
 
 
 class GroupViewSet(
@@ -103,10 +104,6 @@ class GenreViewSet(GenreGroupMixin):
 
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
-
-    def get_object(self):
-        slug = self.kwargs.get('slug')
-        return get_object_or_404(Genre, slug=slug)
 
 
 class UserViewSet(viewsets.ModelViewSet):
