@@ -1,8 +1,9 @@
-from rest_framework import serializers
+from rest_framework import mixins, serializers, viewsets
 from rest_framework.fields import CurrentUserDefault
 from rest_framework.filters import SearchFilter
+from rest_framework.permissions import AllowAny
 
-from users.permissions import IsAdminOrReadOnly, IsAuthorOrReadOnly
+from api.permissions import IsAdminOrReadOnly, IsAuthorOrReadOnly
 
 
 class AuthorFieldMixin(serializers.ModelSerializer):
@@ -25,6 +26,12 @@ class AuthorPermissionMixin:
     permission_classes = (IsAuthorOrReadOnly,)
 
 
+class AllowAnyPermissionMixin:
+    """Миксин добавляет класс разрешения для всех."""
+
+    permission_classes = (AllowAny,)
+
+
 class HTTPMethodsMixin:
     """Миксин определяет http методы, которые будет обрабатывать вьюсет."""
 
@@ -37,3 +44,14 @@ class SlugSearchFilterMixin:
     filter_backends = (SearchFilter,)
     search_fields = ('name',)
     lookup_field = 'slug'
+
+
+class GenreGroupMixin(
+    AdminPermissionMixin,
+    SlugSearchFilterMixin,
+    mixins.ListModelMixin,
+    mixins.CreateModelMixin,
+    mixins.DestroyModelMixin,
+    viewsets.GenericViewSet
+):
+    pass
