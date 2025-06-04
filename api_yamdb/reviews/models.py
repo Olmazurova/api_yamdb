@@ -2,8 +2,8 @@ from django.contrib.auth import get_user_model
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
-from .constants import LIMIT_TEXT, MAX_LENGTH, MAX_SCORE, MIN_SCORE
-from .validators import year_validator
+from reviews.constants import LIMIT_TEXT, MAX_LENGTH, MAX_SCORE, MIN_SCORE
+from reviews.validators import year_validator
 
 User = get_user_model()
 
@@ -111,11 +111,11 @@ class Review(AuthorTextCreateModel):
         validators=[
             MaxValueValidator(
                 MAX_SCORE,
-                'Оценка не может быть больше 10'
+                f'Оценка не может быть больше {MAX_SCORE}'
             ),
             MinValueValidator(
                 MIN_SCORE,
-                'Оценка не может быть меньше 1'
+                f'Оценка не может быть меньше {MIN_SCORE}'
             )
         ]
     )
