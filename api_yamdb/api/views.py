@@ -7,14 +7,15 @@ from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, status, viewsets
 from rest_framework.decorators import action
-from rest_framework.permissions import SAFE_METHODS, AllowAny, IsAuthenticated
+from rest_framework.permissions import SAFE_METHODS, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from api.filters import TitleFilter
-from api.mixins import (AdminPermissionMixin, AuthorPermissionMixin,
-                        GenreGroupMixin, HTTPMethodsMixin)
+from api.mixins import (AdminPermissionMixin, AllowAnyPermissionMixin,
+                        AuthorPermissionMixin, GenreGroupMixin,
+                        HTTPMethodsMixin)
 from api.permissions import IsAdmin
 from api.serializers import (CommentSerializer, GenreSerializer,
                              GroupSerializer, ReviewSerializer,
@@ -134,13 +135,11 @@ class UserViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 
-class SignupView(APIView):
+class SignupView(AllowAnyPermissionMixin, APIView):
     """
     Регистрация пользователя.
     Создаёт пользователя и отправляет код подтверждения на email.
     """
-
-    permission_classes = [AllowAny]
 
     def post(self, request):
         serializer = UserRegistrationSerializer(data=request.data)
@@ -171,10 +170,8 @@ class SignupView(APIView):
         )
 
 
-class TokenView(APIView):
+class TokenView(AllowAnyPermissionMixin, APIView):
     """Получение JWT-токена на основе username и confirmation_code."""
-
-    permission_classes = [AllowAny]
 
     def post(self, request):
         serializer = TokenObtainSerializer(data=request.data)
